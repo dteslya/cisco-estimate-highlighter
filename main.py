@@ -34,11 +34,6 @@ async def create_upload_file(file: UploadFile = File(...)):
     yellow_fill = PatternFill(
         fill_type="solid", start_color="FFFF00", end_color="FFFF00"
     )
-    # for row in ws.iter_rows():
-    #     for cell in row:
-    #         if re.match(r"^.*license.*$", str(cell.value), re.IGNORECASE):
-    #             for cell in ws[cell.row]:
-    #                 cell.fill = yellow_fill
 
     # Find header row and part number column
     for row in ws.iter_rows():
@@ -61,9 +56,9 @@ async def create_upload_file(file: UploadFile = File(...)):
             if re.match(r"^.*list\s?price.*$", str(cell.value), re.IGNORECASE):
                 price_col = cell.column
                 break
-    print(f"Header row: {header_row}")
-    print(f"PN Column: {partnumber_col}")
-    print(f"List Price Column: {price_col}")
+    # print(f"Header row: {header_row}")
+    # print(f"PN Column: {partnumber_col}")
+    # print(f"List Price Column: {price_col}")
 
     # Mark zero VAT items
     for row_number in range(header_row + 1, ws.max_row + 1):
