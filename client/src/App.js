@@ -10,7 +10,7 @@ import {
   } from 'grommet';
 import { CircleQuestion, FormClose } from 'grommet-icons';
 import { MyUploader } from './components/uploader/uploader.component';
-
+import { Help } from './components/help/help.component';
 const theme = {
   global: {
     colors: {
@@ -61,10 +61,10 @@ function App() {
                 width='medium'
                 background='light-2'
                 elevation='small'
-                align='center'
+                align='start'
                 justify='center'
               >
-                sidebar
+                <Help />
               </Box>
             </Collapsible>
           ): (
@@ -84,10 +84,10 @@ function App() {
               <Box
                 fill
                 background='light-2'
-                align='center'
+                align='start'
                 justify='center'
               >
-                sidebar
+                <Help />
               </Box>
             </Layer>
           )}

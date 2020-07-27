@@ -11,7 +11,6 @@ export const MyUploader = () => {
     const handleChangeStatus = ({ meta }, status) => {
         console.log(status, meta)
         if (status == 'done') {
-          console.log("yeah")
           fetch('/download')
           // https://stackoverflow.com/a/9834261
           .then(resp => resp.blob())
@@ -21,7 +20,7 @@ export const MyUploader = () => {
             a.style.display = 'none';
             a.href = url;
             // the filename you want
-            //a.download = 'estimate.xlsx';
+            a.download = meta.name;
             document.body.appendChild(a);
             a.click();
             window.URL.revokeObjectURL(url);
