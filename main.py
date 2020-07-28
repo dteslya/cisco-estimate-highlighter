@@ -86,7 +86,7 @@ async def create_upload_file(file: UploadFile = File(...)):
 
         # Check partnumber and price
         if (
-            re.match(r"(^[LRS]-)|(^LIC-)|(.*[1-9]Y$)", str(partnumber))
+            re.match(r"(^[LRS]-)|(^LIC-)|(.*[1-9]Y$)|(.*-[1-9]Y-.*)", str(partnumber))
             and int(price) > 0
         ):
             for cell in ws[row_number]:
