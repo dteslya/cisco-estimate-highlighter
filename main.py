@@ -89,7 +89,7 @@ async def create_upload_file(file: UploadFile = File(...)):
             for cell in ws[row_number]:
                 cell.fill = yellow_fill
         # Check lead time (it may be NoneType or str)
-        elif lead_time and int(lead_time) <= 10 and int(price) > 0:
+        elif lead_time and 0 < int(lead_time) <= 10 and int(price) > 0:
             for cell in ws[row_number]:
                 cell.fill = yellow_fill
 
