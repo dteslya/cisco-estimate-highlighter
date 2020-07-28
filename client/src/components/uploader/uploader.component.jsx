@@ -39,11 +39,11 @@ export const MyUploader = () => {
             multiple={false}
             canCancel={false}
             accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-            inputContent={(files, extra) => (extra.reject ? 'XLSX files only' : 'Drop XLSX File')}
+            inputContent={(files, extra) => (extra.reject ? 'XLSX files only' : 'Drop XLSX File Here')}
             styles={{
               dropzone: { border: '4px dashed #f2f2f2',
                           width: 400,
-                          height: 200,
+                          height: 400,
                           overflow: 'auto',
                         },
               dropzoneActive: { borderColor: '#01A460' },
