@@ -6,9 +6,11 @@ import {
     Heading,
     Grommet,
     Layer,
+    Footer,
+    Anchor,
     ResponsiveContext,
   } from 'grommet';
-import { CircleQuestion, FormClose } from 'grommet-icons';
+import { CircleQuestion, FormClose, Github } from 'grommet-icons';
 import { MyUploader } from './components/uploader/uploader.component';
 import { Help } from './components/help/help.component';
 const theme = {
@@ -92,6 +94,9 @@ function App() {
             </Layer>
           )}
         </Box>
+        <Footer justify="center" background="brand" pad="small">
+          <Anchor href="https://github.com/dteslya/cisco-estimate-highlighter" target="_blank"><Github /></Anchor>
+        </Footer>
       </Box>
       )}
       </ResponsiveContext.Consumer>
