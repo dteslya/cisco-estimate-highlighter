@@ -61,6 +61,7 @@ async def create_upload_file(file: UploadFile = File(...)):
         ws, header_row, regexp=r"(^.*part number.*$)|(^.*item name.*$)"
     )
     leadtime_col = find_column(ws, header_row, regexp=r"^.*lead\s?time.*$")
+
     print(f"Header row: {header_row}")
     print(f"PN Column: {partnumber_col}")
     print(f"Lead Time Column: {leadtime_col}")
@@ -74,6 +75,15 @@ async def create_upload_file(file: UploadFile = File(...)):
         description = ws.cell(row=row_number, column=description_col).value
         price = ws.cell(row=row_number, column=price_col).value
         lead_time = ws.cell(row=row_number, column=leadtime_col).value
+
+        # Normalize lead time (it may be NoneType or str)
+        if isinstance(lead_time, str):
+            try:
+                lead_time = int(lead_time)
+            # Handle non-numerical string, e.g. "N/A"
+            except ValueError:
+                lead_time = None
+
         # Check partnumber and price
         if (
             re.match(r"(^[LRS]-)|(^LIC-)|(.*[1-9]Y$)", str(partnumber))
@@ -88,8 +98,8 @@ async def create_upload_file(file: UploadFile = File(...)):
         ):
             for cell in ws[row_number]:
                 cell.fill = yellow_fill
-        # Check lead time (it may be NoneType or str)
-        elif lead_time and 0 < int(lead_time) <= 10 and int(price) > 0:
+        # Check lead time
+        elif lead_time and 0 < lead_time <= 10 and int(price) > 0:
             for cell in ws[row_number]:
                 cell.fill = yellow_fill
 
