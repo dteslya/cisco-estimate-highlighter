@@ -24,6 +24,14 @@ def find_column(ws, header_row, regexp):
     return column
 
 
+def highlight_row(ws, row_number):
+    yellow_fill = PatternFill(
+        fill_type="solid", start_color="FFFF00", end_color="FFFF00"
+    )
+    for cell in ws[row_number]:
+        cell.fill = yellow_fill
+
+
 @app.get("/")
 async def read_index():
     return FileResponse("client/build/index.html")
@@ -40,9 +48,6 @@ async def create_upload_file(file: UploadFile = File(...)):
     contents = await file.read()
     wb = load_workbook(filename=BytesIO(contents))
     ws = wb.active
-    yellow_fill = PatternFill(
-        fill_type="solid", start_color="FFFF00", end_color="FFFF00"
-    )
 
     # Find header row
     for row in ws.iter_rows():
@@ -83,25 +88,25 @@ async def create_upload_file(file: UploadFile = File(...)):
             # Handle non-numerical string, e.g. "N/A"
             except ValueError:
                 lead_time = None
-
-        # Check partnumber and price
-        if (
-            re.match(r"(^[LRS]-)|(^LIC-)|(.*[1-9]Y$)|(.*-[1-9]Y-.*)", str(partnumber))
-            and int(price) > 0
-        ):
-            for cell in ws[row_number]:
-                cell.fill = yellow_fill
-        # Check description and price
-        elif (
-            re.match(r".*e-?[\s-]?delivery.*", str(description), re.IGNORECASE)
-            and int(price) > 0
-        ):
-            for cell in ws[row_number]:
-                cell.fill = yellow_fill
-        # Check lead time
-        elif lead_time and 0 < lead_time <= 10 and int(price) > 0:
-            for cell in ws[row_number]:
-                cell.fill = yellow_fill
+        # Exclude partnumbers
+        if not re.match(r"(^CON-.*)|(^SG3.*)", str(partnumber)):
+            # Check partnumber and price
+            if (
+                re.match(
+                    r"(^[LRS]-)|(^LIC-)|(.*[1-9]Y$)|(.*-[1-9]Y-.*)", str(partnumber)
+                )
+                and int(price) > 0
+            ):
+                highlight_row(ws, row_number)
+            # Check description and price
+            elif (
+                re.match(r".*e-?[\s-]?delivery.*", str(description), re.IGNORECASE)
+                and int(price) > 0
+            ):
+                highlight_row(ws, row_number)
+            # Check lead time
+            elif lead_time and 0 < lead_time <= 10 and int(price) > 0:
+                highlight_row(ws, row_number)
 
     # Save resulting sheet in temp file
     with NamedTemporaryFile() as tmp:
