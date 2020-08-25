@@ -66,11 +66,13 @@ async def create_upload_file(file: UploadFile = File(...)):
         ws, header_row, regexp=r"(^.*part number.*$)|(^.*item name.*$)"
     )
     leadtime_col = find_column(ws, header_row, regexp=r"^.*lead\s?time.*$")
+    service_col = find_column(ws, header_row, regexp=r"^.*service\s?duration.*$")
 
     print(f"Header row: {header_row}")
     print(f"PN Column: {partnumber_col}")
     print(f"Lead Time Column: {leadtime_col}")
     print(f"List Price Column: {price_col}")
+    print(f"Service Duration Column: {service_col}")
 
     # Mark zero VAT items
     for row_number in range(header_row + 1, ws.max_row + 1):
@@ -80,6 +82,7 @@ async def create_upload_file(file: UploadFile = File(...)):
         description = ws.cell(row=row_number, column=description_col).value
         price = ws.cell(row=row_number, column=price_col).value
         lead_time = ws.cell(row=row_number, column=leadtime_col).value
+        service_duration = ws.cell(row=row_number, column=service_col).value
 
         # Normalize lead time (it may be NoneType or str)
         if isinstance(lead_time, str):
@@ -88,6 +91,13 @@ async def create_upload_file(file: UploadFile = File(...)):
             # Handle non-numerical string, e.g. "N/A"
             except ValueError:
                 lead_time = None
+        # Normalize service duration (it may be int or str)
+        if isinstance(service_duration, str):
+            try:
+                service_duration = int(service_duration)
+            # Handle non-numerical string, e.g. "---"
+            except ValueError:
+                service_duration = None
         # Exclude partnumbers
         if not re.match(r"(^CON-.*)|(^SG3.*)", str(partnumber)):
             # Check partnumber and price
@@ -106,6 +116,9 @@ async def create_upload_file(file: UploadFile = File(...)):
                 highlight_row(ws, row_number)
             # Check lead time
             elif lead_time and 0 < lead_time <= 10 and int(price) > 0:
+                highlight_row(ws, row_number)
+            # Check service duration
+            elif service_duration and int(price) > 0:
                 highlight_row(ws, row_number)
 
     # Save resulting sheet in temp file
